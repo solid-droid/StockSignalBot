@@ -4,6 +4,7 @@ import {Snackbar } from 'react-native-paper'
 
 import Card from '../shared/Card'
 import Search from '../shared/Search'
+import SignalCard from './SignalCard'
 
 export default function Dashboard({navigation}) {
 
@@ -18,9 +19,9 @@ export default function Dashboard({navigation}) {
     const onDismissSnackBar = () => setVisible(false);
 
     const [symbolList, setSymbolList] = useState([
-        {title : 'hello1', key:'1'},
-        {title : 'world' , key:'2'},
-        {title : 'test' , key:'3'},
+        {name : 'SBIN.NS', key:'1'},
+        {name : 'world' , key:'2'},
+        {name : 'test' , key:'3'},
 
     ]);
 
@@ -32,7 +33,7 @@ export default function Dashboard({navigation}) {
             renderItem={({item})=>(
                 <TouchableOpacity>
                   <Card>
-                    <Text>{item.title}</Text>
+                    <SignalCard symbol={item} updateSymbol={setSymbolList}/>
                   </Card>
                 </TouchableOpacity>
             )}
