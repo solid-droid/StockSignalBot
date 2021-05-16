@@ -7,45 +7,45 @@ export default function SignalCard({symbol, updateSymbol}) {
             <View style={styles.data}>
                 <View style={styles.symbol}>
                     <Text style={styles.symbolName}>{symbol.name}</Text>
-                    <Text style={styles.symbolValue}>115.75</Text>
+                    <Text style={styles.symbolValue}>{symbol.value}</Text>
                 </View>
                 <View style={styles.symbol}>
                     <Text style={styles.Indicator}>RSI-14</Text>
                     <Text style={styles.seperator}>:</Text>
                     <View style={styles.Indicatorvalue}>
                         <Text style={styles.RSIbox}></Text>
-                        <Text style={styles.RSIvalue}>22</Text>
+                        <Text style={styles.RSIvalue}>{symbol.RSI.M.value}</Text>
                         <Text style={styles.RSIbox}></Text>
-                        <Text style={styles.RSIvalue}>25</Text>
+                        <Text style={styles.RSIvalue}>{symbol.RSI.H.value}</Text>
                         <Text style={styles.RSIbox}></Text>
-                        <Text style={styles.RSIvalue}>55</Text>
+                        <Text style={styles.RSIvalue}>{symbol.RSI.D.value}</Text>
                         <Text style={styles.RSIbox}></Text>
-                        <Text style={styles.RSIvalue}>43</Text>
+                        <Text style={styles.RSIvalue}>{symbol.RSI.W.value}</Text>
                     </View>
                  </View>
                  <View style={styles.symbol}>
                     <Text style={styles.Indicator}>MA</Text>
                     <Text style={styles.seperator}>:</Text>
-                    <Text style={styles.Indicatorvalue}>135.11</Text>
+                    <Text style={styles.Indicatorvalue}>{symbol.MA}</Text>
                  </View>
                  <View style={styles.symbol}>
                     <Text style={styles.Indicator}>Rating</Text>
                     <Text style={styles.seperator}>:</Text>
-                    <Text style={styles.Indicatorvalue}>BUY(80%)</Text>
+                    <Text style={styles.Indicatorvalue}>{symbol.Rating.type}({symbol.Rating.rating})</Text>
                  </View>
             </View>
             <View style={styles.signal}>
                 <View style={styles.support}>
-                    <Text style={styles.leftPoint}>125.5</Text>
-                    <Text style={styles.rightPoint}>150.7</Text>
+                    <Text style={styles.leftPoint}>{symbol.Support.a}</Text>
+                    <Text style={styles.rightPoint}>{symbol.Support.b}</Text>
                 </View>
                 <View style={styles.signalType}>
-                    <Text style={styles.SignalName}>BUY</Text>
-                    <Text style={styles.SignalScore}>85%</Text>
+                    <Text style={styles.SignalName}>{symbol.Signal.type}</Text>
+                    <Text style={styles.SignalScore}>{symbol.Score}</Text>
                 </View>
                 <View style={styles.support}>
-                    <Text style={styles.leftPoint}>125.5</Text>
-                    <Text style={styles.rightPoint}>150.7</Text>
+                    <Text style={styles.leftPoint}>{symbol.Resistance.a}</Text>
+                    <Text style={styles.rightPoint}>{symbol.Resistance.b}</Text>
                 </View>
             </View>
         </View>
@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
     symbol:{
         flexDirection:'row',
         alignItems:'baseline',
-        marginBottom:7,
+        marginBottom:3,
     },
     symbolName:{
         fontSize:30,
@@ -122,6 +122,7 @@ const styles = StyleSheet.create({
         flex:18,
         marginRight:5,
         justifyContent:'flex-start',
+        alignItems:'center',
         flexDirection:'row'
     },
     RSIvalue: {
