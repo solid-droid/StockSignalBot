@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "StockSignalBot",
-    "slug": "StockSignalBot",
+    "name": "Signal Bot",
+    "slug": "SignalBot",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -20,6 +20,8 @@
       "supportsTablet": true
     },
     "android": {
+      "useNextNotificationsApi":true,
+      "package": "com.solidDroid.signalBot",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
