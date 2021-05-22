@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, View} from 'react-native'
+import { StyleSheet, View, TouchableOpacity} from 'react-native'
 
 export default function Card(props) {
     return (
@@ -13,7 +13,7 @@ export default function Card(props) {
 
 const styles = StyleSheet.create({
     card:{
-        borderRadius:6,
+        borderRadius:10,
         elevation:3,
         backgroundColor:'#fff',
         shadowOffset: {width:1, height:1},

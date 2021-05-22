@@ -27,9 +27,6 @@ export default function Search({success}) {
                 autoCapitalize="characters"
 
             />
-             {/* <TouchableOpacity onPress={AddSymbol}>
-                <IconButton icon="plus-circle" color={Colors.red500}  size={40} />
-            </TouchableOpacity> */}
         </View>
     )
 }

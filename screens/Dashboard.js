@@ -1,6 +1,8 @@
 import React, {useState} from 'react'
-import { View, Text, TouchableOpacity, FlatList } from 'react-native'
+import { View, StyleSheet, TouchableOpacity } from 'react-native'
 import {Snackbar } from 'react-native-paper'
+import { SwipeListView } from 'react-native-swipe-list-view';
+import Icon from "react-native-vector-icons/FontAwesome";
 
 import Card from '../shared/Card'
 import Search from '../shared/Search'
@@ -19,7 +21,7 @@ export default function Dashboard({navigation}) {
 
     const createEntry = (symbol) => {
         setSymbolList(previousList => {
-            return [...previousList,{
+            return [{
                 name:symbol, 
                 key:String(previousList.length), 
                 value:135,
@@ -35,7 +37,7 @@ export default function Dashboard({navigation}) {
                 Resistance:{a:125.5, b: 150.7},
                 Score: '85%',
                 Signal: {type:'BUY', color:'#fff'}
-                }]
+                },...previousList]
         })
     }
 
@@ -43,22 +45,75 @@ export default function Dashboard({navigation}) {
 
     const [symbolList, setSymbolList] = useState([]);
 
+    const onRowDidOpen = rowKey => {
+
+    };
+    const closeRow = (rowMap, rowKey) => {
+        if (rowMap[rowKey]) {
+            rowMap[rowKey].closeRow();
+        }
+    };
+
+    const deleteRow = (rowMap, rowKey) => {
+        closeRow(rowMap, rowKey);
+        const newData = [...symbolList];
+        const prevIndex = symbolList.findIndex(item => item.key === rowKey);
+        newData.splice(prevIndex, 1);
+        setSymbolList(newData);
+    };
+
+    const renderHiddenItem = (data, rowMap) => (
+        <View style={styles.rowBack}>
+            <TouchableOpacity
+                style={styles.backRightBtn}
+                onPress={() => deleteRow(rowMap, data.item.key)}
+            >
+                <Icon name="trash" style={styles.iconStyle} size={60} color="#900" />
+            </TouchableOpacity>
+        </View>
+    );
+
+    const renderItem = data => (
+        <Card>
+            <SignalCard symbol={data.item} updateSymbol={setSymbolList}/>
+        </Card>
+    );
     return (
         <View style={{height:'100%'}}>
            <Search success={successNotif}></Search>
-           <FlatList
+           <SwipeListView
+           disableRightSwipe
             data={symbolList}
-            renderItem={({item})=>(
-                <TouchableOpacity>
-                  <Card>
-                    <SignalCard symbol={item} updateSymbol={setSymbolList}/>
-                  </Card>
-                </TouchableOpacity>
-            )}
+            renderItem={renderItem}
+            renderHiddenItem={renderHiddenItem}
+            leftOpenValue={75}
+            rightOpenValue={-100}
+            previewRowKey={'0'}
+            previewOpenValue={-40}
+            previewOpenDelay={3000}
+            onRowDidOpen={onRowDidOpen}
             />
             <Snackbar visible={visible}  duration={1500}  onDismiss={onDismissSnackBar}>
                {symbol} added.
             </Snackbar>
         </View>
     )
+
 }
+
+const styles = StyleSheet.create({
+    iconStyle: {
+        paddingRight:25
+    },
+    rowBack: {
+        justifyContent: 'center',
+        backgroundColor: '#ffd2d2',
+        alignItems:'flex-end',
+        flex: 1,
+        margin:10,
+        borderRadius:10
+    },
+    backRightBtn: {
+
+    },
+});
