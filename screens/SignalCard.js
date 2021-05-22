@@ -7,7 +7,7 @@ export default function SignalCard({symbol, updateSymbol}) {
         <View 
         style={styles.container}>
             <View style={styles.data}>
-                <View style={[styles.symbol,{marginBottom:10}]}>
+                <View style={[styles.symbol,{marginBottom:6}]}>
                     <Text style={styles.symbolName}>{symbol.name}</Text>
                     <Text style={styles.symbolValue}>{symbol.value}</Text>
                 </View>
@@ -58,7 +58,7 @@ export default function SignalCard({symbol, updateSymbol}) {
 const styles = StyleSheet.create({
     container : {
         flexDirection:'row',
-        height:120,
+        height:125,
         borderRadius:10
     },
     data:{

@@ -2,6 +2,7 @@ import React, {useState} from 'react'
 import { View, StyleSheet, TouchableOpacity } from 'react-native'
 import {Snackbar } from 'react-native-paper'
 import { SwipeListView } from 'react-native-swipe-list-view';
+import {LinearGradient} from 'expo-linear-gradient';
 import Icon from "react-native-vector-icons/FontAwesome";
 
 import Card from '../shared/Card'
@@ -79,7 +80,7 @@ export default function Dashboard({navigation}) {
         </Card>
     );
     return (
-        <View style={{height:'100%'}}>
+        <View style={{height:'100%', backgroundColor:"#fff"}}>
            <Search success={successNotif}></Search>
            <SwipeListView
            disableRightSwipe
@@ -111,6 +112,8 @@ const styles = StyleSheet.create({
         alignItems:'flex-end',
         flex: 1,
         margin:10,
+        marginHorizontal:15,
+        marginLeft:20,
         borderRadius:10
     },
     backRightBtn: {

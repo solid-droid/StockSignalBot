@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
         height:'100%',
         width:'100%',
         alignItems:'center',
-        justifyContent:'center'
+        justifyContent:'center',
     },
     icon:{
         fontSize:35,

@@ -1,30 +1,33 @@
 import React from 'react'
-import { StyleSheet, View, TouchableOpacity} from 'react-native'
+import { StyleSheet, View} from 'react-native'
+import {LinearGradient} from 'expo-linear-gradient';
 
 export default function Card(props) {
+    const BUY = ['#f8fff4', '#e9ffdb', '#c2fb9e'];
+    const SELL = ['#ffeaea', '#ffc0c0', '#ffb5b5'];
+    const HOLD = ['#ebebeb', '#e3e3e3', '#d2d2d2'];
+
     return (
-        <View style={styles.card}>
+
+            <LinearGradient  start={{x: 0, y: 0}} end={{x: 1, y: 0}} colors={HOLD} style={styles.card}>
             <View style={styles.cardComponent}>
                     {props.children}
             </View>
-        </View>
+        </LinearGradient>
+
     )
 }
 
 const styles = StyleSheet.create({
     card:{
         borderRadius:10,
-        elevation:3,
+        elevation:5,
         backgroundColor:'#fff',
-        shadowOffset: {width:1, height:1},
-        shadowColor:'#333',
-        shadowOpacity:0.3,
-        shadowRadius:2,
-        marginHorizontal:4,
-        marginVertical:6
+        marginHorizontal:15,
+        marginVertical:6,
     },
     cardComponent:{
-        marginHorizontal:18,
+        marginHorizontal:10,
         marginVertical: 10,
     }
 })

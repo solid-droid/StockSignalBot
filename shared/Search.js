@@ -38,7 +38,8 @@ const styles = StyleSheet.create({
         alignItems:'center',
         justifyContent:'flex-start',
         width:'100%',
-        flexDirection:'row'
+        flexDirection:'row',
+        marginBottom:10,
     },
     input: {
         height: '90%',
