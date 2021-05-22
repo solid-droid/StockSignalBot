@@ -21,14 +21,15 @@ export default function Search({success}) {
                 mode='outlined'
                 style={styles.input}
                 onChangeText={onChangeSymbol}
+                onSubmitEditing={AddSymbol}
                 value={symbol}
                 placeholder="Enter Stock Symbol"
                 autoCapitalize="characters"
 
             />
-             <TouchableOpacity onPress={AddSymbol}>
+             {/* <TouchableOpacity onPress={AddSymbol}>
                 <IconButton icon="plus-circle" color={Colors.red500}  size={40} />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
         </View>
     )
 }
@@ -47,7 +48,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         paddingHorizontal:10,
         fontSize:20,
-        width:'80%',
+        width:'95%',
         borderRadius:10,
       },
 })
