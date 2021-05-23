@@ -57,7 +57,8 @@ const styles = StyleSheet.create({
     container : {
         flexDirection:'row',
         height:125,
-        borderRadius:10
+        borderRadius:9,
+        margin:10
     },
     data:{
         // backgroundColor:Colors.blue100,
@@ -107,7 +108,7 @@ const styles = StyleSheet.create({
         marginBottom:3,
     },
     symbolName:{
-        fontSize:30,
+        fontSize:25,
         fontWeight:'bold'
     },
     symbolValue:{

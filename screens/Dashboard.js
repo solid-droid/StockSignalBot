@@ -3,6 +3,7 @@ import { View, StyleSheet, TouchableOpacity, Text, StatusBar } from 'react-nativ
 import {Snackbar } from 'react-native-paper'
 import { SwipeListView } from 'react-native-swipe-list-view';
 import Icon from "react-native-vector-icons/FontAwesome";
+import SignalChart from './SignalChart';
 
 import Card from '../shared/Card'
 import Search from '../shared/Search'
@@ -71,17 +72,17 @@ export default function Dashboard({navigation}) {
                 <Icon name="trash" style={styles.iconStyle} size={60} color="#900" />
             </TouchableOpacity>
             <View style={styles.ChartContainer}>
-            <Card>
+            {/* <Card background={'NONE'}> */}
                 <View style={styles.ChartCard}>
-                <Text>{data.item.name}</Text>
+                <SignalChart symbol={data.item.name}></SignalChart>
                 </View>
-            </Card>
+            {/* </Card> */}
             </View>
         </View>
     );
 
     const renderItem = data => (
-        <Card>
+        <Card background={data.item.Signal.type}>
             <SignalCard symbol={data.item} updateSymbol={setSymbolList}/>
         </Card>
     );
