@@ -21,8 +21,6 @@ export default function SignalCard({symbol, updateSymbol}) {
                         <Text style={styles.RSIvalue}>{symbol.RSI.H.value}</Text>
                         <Text style={styles.RSIbox}></Text>
                         <Text style={styles.RSIvalue}>{symbol.RSI.D.value}</Text>
-                        <Text style={styles.RSIbox}></Text>
-                        <Text style={styles.RSIvalue}>{symbol.RSI.W.value}</Text>
                     </View>
                  </View>
                  <View style={styles.symbol}>

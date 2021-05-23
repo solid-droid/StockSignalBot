@@ -33,7 +33,7 @@ export default function Search({success}) {
 const styles = StyleSheet.create({
     search : {
         height: 60,
-        paddingTop: 10,
+        paddingTop: 0,
         marginHorizontal: 10,
         alignItems:'center',
         justifyContent:'flex-start',
@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
         marginBottom:10,
     },
     input: {
-        height: '90%',
+        height: '80%',
         borderWidth: 1,
         paddingHorizontal:10,
         fontSize:20,

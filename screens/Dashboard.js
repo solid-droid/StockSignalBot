@@ -1,8 +1,7 @@
 import React, {useState} from 'react'
-import { View, StyleSheet, TouchableOpacity } from 'react-native'
+import { View, StyleSheet, TouchableOpacity, Text, StatusBar } from 'react-native'
 import {Snackbar } from 'react-native-paper'
 import { SwipeListView } from 'react-native-swipe-list-view';
-import {LinearGradient} from 'expo-linear-gradient';
 import Icon from "react-native-vector-icons/FontAwesome";
 
 import Card from '../shared/Card'
@@ -66,11 +65,18 @@ export default function Dashboard({navigation}) {
     const renderHiddenItem = (data, rowMap) => (
         <View style={styles.rowBack}>
             <TouchableOpacity
-                style={styles.backRightBtn}
+                style={styles.deleteBtn}
                 onPress={() => deleteRow(rowMap, data.item.key)}
             >
                 <Icon name="trash" style={styles.iconStyle} size={60} color="#900" />
             </TouchableOpacity>
+            <View style={styles.ChartContainer}>
+            <Card>
+                <View style={styles.ChartCard}>
+                <Text>{data.item.name}</Text>
+                </View>
+            </Card>
+            </View>
         </View>
     );
 
@@ -80,19 +86,25 @@ export default function Dashboard({navigation}) {
         </Card>
     );
     return (
-        <View style={{height:'100%', backgroundColor:"#fff"}}>
+        <View style={styles.container}>
+            <StatusBar backgroundColor='#fff' barStyle='dark-content' />
+            <View style={styles.header}>
+            <Text style={styles.headerTextLeft}> SIGNAL BOT</Text>
+            <Text style={styles.headerTextRight}>@SolidDroid</Text>
+            </View>
+            
            <Search success={successNotif}></Search>
            <SwipeListView
-           disableRightSwipe
             data={symbolList}
             renderItem={renderItem}
             renderHiddenItem={renderHiddenItem}
-            leftOpenValue={75}
-            rightOpenValue={-100}
-            previewRowKey={'0'}
-            previewOpenValue={-40}
-            previewOpenDelay={3000}
+            leftOpenValue={100}
+            rightOpenValue={-280}
+            stopLeftSwipe={100}
+            swipeToOpenPercent={30}
+            stopRightSwipe={-280}
             onRowDidOpen={onRowDidOpen}
+            closeOnRowOpen={false}
             />
             <Snackbar visible={visible}  duration={1500}  onDismiss={onDismissSnackBar}>
                {symbol} added.
@@ -103,20 +115,51 @@ export default function Dashboard({navigation}) {
 }
 
 const styles = StyleSheet.create({
+    container: {
+        height:'100%', 
+        backgroundColor:"#fff"
+    },
+    header:{
+        paddingHorizontal:10,
+        paddingTop:5,
+        flexDirection:'row',
+        justifyContent:'space-between'
+    },
+    headerTextLeft:{
+        textAlignVertical:'bottom',
+        fontSize:20,
+        fontWeight:'bold'
+    },
+    headerTextRight:{
+        textAlignVertical:'bottom',
+        height:'100%',
+        color:'grey',
+    },
     iconStyle: {
-        paddingRight:25
+        paddingLeft:25
     },
     rowBack: {
         justifyContent: 'center',
-        backgroundColor: '#ffd2d2',
-        alignItems:'flex-end',
-        flex: 1,
-        margin:10,
+        alignItems:'center',
+        flex:1,
+        flexDirection:'row',
+        marginVertical:5,
         marginHorizontal:15,
         marginLeft:20,
-        borderRadius:10
-    },
-    backRightBtn: {
+        justifyContent:'flex-start'
 
     },
+    deleteBtn: {
+        height:'90%',
+        width:97,
+        justifyContent:'center',
+        borderRadius:10,
+       },
+    ChartContainer:{
+        marginLeft:0,
+    },
+    ChartCard:{
+        width:240,
+        height:'100%',
+    }
 });
