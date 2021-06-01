@@ -1,17 +1,47 @@
 import React from 'react'
-import { View,TextInput, StyleSheet, TouchableOpacity } from 'react-native'
-import {IconButton, Colors, } from 'react-native-paper'
+import { View,TextInput, StyleSheet} from 'react-native'
+var stockServer = require("yahoo-financial-data")
 
-export default function Search({success}) {
+export default function Search({success, symbolList, fail}) {
 
     let textInput;
     
     const [symbol, onChangeSymbol ] = React.useState("");
 
     const AddSymbol = () => {
-        // navigation.navigate('AboutScreen');
-        success(symbol);
-        textInput.clear();
+        let value = symbol;
+        let allow = true;
+        let msg = 'Not Found';
+        if(value.split('.')[1]!=='NS')
+        {
+            value =value.split('.')[0]+'.NS'
+        }
+        symbolList.forEach(x => {
+            if(x.name === value)
+            {
+                allow = false; 
+                msg = 'Already Exists'
+            }
+        });
+
+        if(allow)
+        {
+            stockServer.price( value , (err, data) => {
+                if(data===null)
+                {
+                    allow = false; 
+                    msg = value + ' is not a valid symbol'
+                    fail(msg);
+                }else{
+                    success(value);
+                }
+            });
+        } else
+        {
+            fail(msg);
+        }
+        
+       textInput.clear();
     }
 
     return (

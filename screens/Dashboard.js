@@ -1,31 +1,52 @@
 import React, {useState} from 'react'
-import { View, StyleSheet, TouchableOpacity, Text, StatusBar } from 'react-native'
+import { View, StyleSheet, TouchableOpacity, Text, StatusBar, Dimensions } from 'react-native'
 import {Snackbar } from 'react-native-paper'
 import { SwipeListView } from 'react-native-swipe-list-view';
 import Icon from "react-native-vector-icons/FontAwesome";
-import SignalChart from './SignalChart';
+
 
 import Card from '../shared/Card'
 import Search from '../shared/Search'
 import SignalCard from './SignalCard'
+import SignalChart from './SignalChart'
+import BackgroundTask from '../shared/BackgroundTask'
+
+const window = Dimensions.get("window");
 
 export default function Dashboard({navigation}) {
 
     const [visible, setVisible] = React.useState(false);
     const [symbol, setSymbol] = React.useState('');
+    const [NotifMessage, setNotifMessage] = React.useState('');
 
-    const successNotif = (symbol) => {
+    const success = (symbol) => {
         setSymbol(symbol);
         createEntry(symbol);
+        setNotifMessage('Added');
         setVisible(true);
     };
+
+    const fail = (msg) => {
+        setNotifMessage(msg);
+        setVisible(true);
+    };
+
+    const updateList = (i, value) =>{
+      if(value!==undefined){
+        setSymbolList(prev => {
+            prev[i].value = value;
+            return [...prev];
+        })
+      }
+        // console.log(symbolList);
+    }
 
     const createEntry = (symbol) => {
         setSymbolList(previousList => {
             return [{
                 name:symbol, 
                 key:String(previousList.length), 
-                value:135,
+                value:0,
                 RSI:{
                     M:{value:22,color:'#fff'},
                     H:{value:27,color:'#fff'},
@@ -74,7 +95,7 @@ export default function Dashboard({navigation}) {
             <View style={styles.ChartContainer}>
             {/* <Card background={'NONE'}> */}
                 <View style={styles.ChartCard}>
-                <SignalChart symbol={data.item.name}></SignalChart>
+                <SignalChart symbol={data.item.name} value={data.item.value}></SignalChart>
                 </View>
             {/* </Card> */}
             </View>
@@ -88,27 +109,29 @@ export default function Dashboard({navigation}) {
     );
     return (
         <View style={styles.container}>
+            <View style={{position:'absolute', overflow:'hidden', height:0}}>
+                <BackgroundTask {...{symbolList,updateList}}/>
+            </View>
             <StatusBar backgroundColor='#fff' barStyle='dark-content' />
             <View style={styles.header}>
             <Text style={styles.headerTextLeft}> SIGNAL BOT</Text>
             <Text style={styles.headerTextRight}>@SolidDroid</Text>
             </View>
-            
-           <Search success={successNotif}></Search>
+           <Search {...{symbolList, success, fail}}></Search>
            <SwipeListView
             data={symbolList}
             renderItem={renderItem}
             renderHiddenItem={renderHiddenItem}
             leftOpenValue={100}
-            rightOpenValue={-280}
+            rightOpenValue={-window.width+133}
             stopLeftSwipe={100}
             swipeToOpenPercent={30}
-            stopRightSwipe={-280}
+            stopRightSwipe={-window.width+133}
             onRowDidOpen={onRowDidOpen}
             closeOnRowOpen={false}
             />
             <Snackbar visible={visible}  duration={1500}  onDismiss={onDismissSnackBar}>
-               {symbol} added.
+               {symbol} {NotifMessage}
             </Snackbar>
         </View>
     )
@@ -160,7 +183,7 @@ const styles = StyleSheet.create({
         marginLeft:0,
     },
     ChartCard:{
-        width:240,
+        width:225,
         height:'100%',
     }
 });

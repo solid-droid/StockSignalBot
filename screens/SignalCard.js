@@ -7,8 +7,8 @@ export default function SignalCard({symbol, updateSymbol}) {
         <View 
         style={styles.container}>
             <View style={styles.data}>
-                <View style={[styles.symbol,{marginBottom:6}]}>
-                    <Text style={styles.symbolName}>{symbol.name}</Text>
+                <View style={[styles.symbol,{marginBottom:10}]}>
+                    <Text style={styles.symbolName}>{symbol.name.split('.')[0]}</Text>
                     <Text style={styles.symbolValue}>{symbol.value}</Text>
                 </View>
                 <View style={styles.symbol}>
@@ -108,12 +108,13 @@ const styles = StyleSheet.create({
         marginBottom:3,
     },
     symbolName:{
-        fontSize:25,
-        fontWeight:'bold'
+        fontSize:20,
+        fontWeight:'bold',
+        marginLeft:-5
     },
     symbolValue:{
         paddingLeft:10,
-        fontSize:25
+        fontSize:15
     },
     Indicator:{
         flex:5
