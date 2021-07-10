@@ -1,0 +1,41 @@
+yahoo.analystRecomendation(ticker, callback)                     // Available; Not Yet Tested
+yahoo.assetType(ticker, callback)                                // Available; Not Yet Tested
+yahoo.companyName(ticker, callback)                              // Available; Not Yet Tested
+yahoo.dividendRate(ticker, callback)                             // Available; Not Yet Tested
+yahoo.dividendYield(ticker, callback)                            // Available; Not Yet Tested
+yahoo.earningsGrowth(ticker, callback)                           // Available; Not Yet Tested
+yahoo.exchange(ticker, callback)                                 // Available; Not Yet Tested
+yahoo.fiftyDayAverage(ticker, callback)                          // Available; Not Yet Tested
+yahoo.fiftyTwoWeekHigh(ticker, callback)                         // Available; Not Yet Tested
+yahoo.fiftyTwoWeekLow(ticker, callback)                          // Available; Not Yet Tested
+yahoo.fiveYearAvgDividendYield(ticker, callback)                 // Available; Not Yet Tested
+yahoo.forwardPE(ticker, callback)                                // Available; Not Yet Tested
+yahoo.freeCashflow(ticker, callback)                             // Available; Not Yet Tested
+yahoo.grossMargins(ticker, callback)                             // Available; Not Yet Tested
+yahoo.grossProfits(ticker, callback)                             // Available; Not Yet Tested
+yahoo.history(ticker, callback)                                  // Available; 
+yahoo.marketCap(ticker, callback)                                // Available; 
+yahoo.marketState(ticker, callback)                              // Available; Not Yet Tested
+yahoo.numberOfAnalystOpinions(ticker, callback)                  // Available; Not Yet Tested
+yahoo.operatingCashflow(ticker, callback)                        // Available; Not Yet Tested
+yahoo.operatingMargins(ticker, callback)                         // Available; Not Yet Tested
+yahoo.postMarketPrice(ticker, callback)                          // Available; Not Yet Tested
+yahoo.preMarketPrice(ticker, callback)                           // Available; Not Yet Tested
+yahoo.price(ticker, callback)                                    // Available; 
+yahoo.priceToBook(ticker, callback)                              // Available; Not Yet Tested
+yahoo.profitMargins(ticker, callback)                            // Available; Not Yet Tested
+yahoo.returnOnAssets(ticker, callback)                           // Available; Not Yet Tested
+yahoo.returnOnEquity(ticker, callback)                           // Available; Not Yet Tested
+yahoo.revenueGrowth(ticker, callback)                            // Available; Not Yet Tested
+yahoo.revenuePerShare(ticker, callback)                          // Available; Not Yet Tested
+yahoo.targetHighPrice(ticker, callback)                          // Available; Not Yet Tested
+yahoo.targetLowPrice(ticker, callback)                           // Available; Not Yet Tested
+yahoo.targetMeanPrice(ticker, callback)                          // Available; Not Yet Tested
+yahoo.targetMedianPrice(ticker, callback)                        // Available; Not Yet Tested
+yahoo.totalCash(ticker, callback)                                // Available; Not Yet Tested
+yahoo.totalCashPerShare(ticker, callback)                        // Available; Not Yet Tested
+yahoo.totalDebt(ticker, callback)                                // Available; Not Yet Tested
+yahoo.totalRevenue(ticker, callback)                             // Available; Not Yet Tested
+yahoo.trailingPE(ticker, callback)                               // Available; Not Yet Tested
+yahoo.twoHundredDayAverage(ticker, callback)                     // Available; Not Yet Tested
+yahoo.volume(ticker, callback)                                   // Available; 
