@@ -1,8 +1,10 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
+import * as Notifications from 'expo-notifications';
 import { View, StyleSheet, TouchableOpacity, Text, StatusBar, Dimensions } from 'react-native'
 import {Snackbar } from 'react-native-paper'
 import { SwipeListView } from 'react-native-swipe-list-view';
 import Icon from "react-native-vector-icons/FontAwesome";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import Card from '../shared/Card'
 import Search from '../shared/Search'
@@ -20,10 +22,33 @@ export default function Dashboard({navigation}) {
     const [symbolList, setSymbolList] = useState([]);
 
 
+    useEffect(() => {
+        getData();
+    }, [])
+
+    const getData = async () => {
+        try {
+          let list = await AsyncStorage.getItem('signalBot_symboList')
+          if(list) (JSON.parse(list)).forEach(x => createEntry(x));
+        
+        } catch(e) {
+          // error reading value
+        }
+      }
+
+    const storeData = async (value) => {
+        try {
+          await AsyncStorage.setItem('signalBot_symboList', JSON.stringify(value))
+        } catch (e) {
+          // saving error
+        }
+      }
 
     const success = (symbol) => {
         setSymbol(symbol);
         createEntry(symbol);
+        const symbolNameList = [...symbolList.map(x=>x.name),symbol];
+        storeData(symbolNameList);
         setNotifMessage('Added');
         setVisible(true);
     };
@@ -32,6 +57,25 @@ export default function Dashboard({navigation}) {
         setNotifMessage(msg);
         setVisible(true);
     };
+///////////////////////////////////////////////////////////////////////
+ const sendNotification = (title, message) => {
+    Notifications.setNotificationHandler({
+      handleNotification: async () => ({
+        shouldShowAlert: true,
+        shouldPlaySound: false,
+        shouldSetBadge: false,
+      }),
+    });
+  
+    Notifications.scheduleNotificationAsync({
+      content: {
+        title: title,
+        body: message,
+      },
+      trigger: null,
+    });
+  }
+  //////////////////////////////////////////////////////////////////
 
     const getScore = (value, RSID, RSIM, MA20, MA200, S , R)=> {
         let Buy = 0, Sell =0;
@@ -71,6 +115,11 @@ export default function Dashboard({navigation}) {
       if(value!==undefined){
         setSymbolList(prev => {
             const {Score, Signal } = getScore(value,_rsiD,_rsiM,_MA20,_MA200, prev[i].Support,  prev[i].Resistance);
+
+            if(prev[i].Signal.type !== Signal.type && Signal.type!=='HOLD'){
+                sendNotification(prev[i].name.split(".")[0] +"   "+ value , Signal.type)
+            }
+            
             prev[i].Score = Score;
             prev[i].Signal = Signal;
             prev[i].value = value;
@@ -131,6 +180,8 @@ export default function Dashboard({navigation}) {
         const newData = [...symbolList];
         const prevIndex = symbolList.findIndex(item => item.key === rowKey);
         newData.splice(prevIndex, 1);
+        const symbolNameList = newData.map(x=>x.name);
+        storeData(symbolNameList);
         setSymbolList(newData);
     };
 
