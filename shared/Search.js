@@ -12,6 +12,7 @@ export default function Search({success, symbolList, fail}) {
         let value = symbol;
         let allow = true;
         let msg = 'Not Found';
+        value = value.toUpperCase();
         if(value.split('.')[1]!=='NS')
         {
             value =value.split('.')[0]+'.NS'

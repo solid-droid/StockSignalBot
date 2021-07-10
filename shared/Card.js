@@ -7,7 +7,7 @@ export default function Card(props) {
     BUY : ['#f8fff4', '#e9ffdb', '#c2fb9e'],
     SELL : ['#ffeaea', '#ffc0c0', '#ffb5b5'],
     HOLD : ['#ebebeb', '#e3e3e3', '#d2d2d2'],
-    NONE: ['#fff','#fff','#fff']
+    ___ : ['#fff','#fff','#fff']
     }
     return (
 

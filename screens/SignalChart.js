@@ -1,29 +1,32 @@
 import React from 'react'
 import { Text, StyleSheet, TouchableOpacity } from 'react-native'
+import {useEffect} from 'react'
 import { LineChart} from 'react-native-chart-kit'
 
-export default function SignalChart({symbol, value}) {
+export default function SignalChart({symbol, value, closeArr=[]}) {
     const interval = ["1 Day", "1 hour", "1 minute"]
+
+    const [data, setData] = React.useState( { datasets: [ {data: [0,0,0]}  ], });
     const [intevalValue, setInteval] = React.useState(0);
+   
+    useEffect(() => {
+        if(value!==0){
+            const final = closeArr.slice(Math.min(closeArr.length - 11, closeArr.length));
+            setData( { datasets: [ {data: final}  ], });
+        }
+    }, [closeArr, value])
+
     return (
         <TouchableOpacity style={styles.container}  onLongPress={()=>{
-            if(intevalValue +1 == interval.length)
-            {
-                setInteval(0);
-            } else {
-                setInteval(intevalValue+1);
-            }
+            // if(intevalValue +1 == interval.length)
+            // {
+            //     setInteval(0);
+            // } else {
+            //     setInteval(intevalValue+1);
+            // }
             }}>
         <LineChart
-            data={{
-               datasets: [
-                {
-                data: [
-                   1,2,3,4,5,6,7,8,9,10,11
-                ],
-                },
-            ],
-            }}
+            data={data}
             width={275} // from react-native
             height={114}
             chartConfig={{
@@ -44,7 +47,7 @@ export default function SignalChart({symbol, value}) {
         />
               <Text style={styles.symbol}>{symbol.split('.')[0]}</Text>
               <Text style={styles.value}>{value}</Text>
-              <Text style={styles.interval}>{interval[intevalValue]}</Text>
+              <Text style={styles.interval}>Interval : {interval[intevalValue]}</Text>
       </TouchableOpacity>
     )
 }

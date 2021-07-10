@@ -4,7 +4,6 @@ import {Snackbar } from 'react-native-paper'
 import { SwipeListView } from 'react-native-swipe-list-view';
 import Icon from "react-native-vector-icons/FontAwesome";
 
-
 import Card from '../shared/Card'
 import Search from '../shared/Search'
 import SignalCard from './SignalCard'
@@ -18,6 +17,9 @@ export default function Dashboard({navigation}) {
     const [visible, setVisible] = React.useState(false);
     const [symbol, setSymbol] = React.useState('');
     const [NotifMessage, setNotifMessage] = React.useState('');
+    const [symbolList, setSymbolList] = useState([]);
+
+
 
     const success = (symbol) => {
         setSymbol(symbol);
@@ -31,45 +33,93 @@ export default function Dashboard({navigation}) {
         setVisible(true);
     };
 
-    const updateList = (i, value) =>{
+    const getScore = (value, RSID, RSIM, MA20, MA200, S , R)=> {
+        let Buy = 0, Sell =0;
+
+        if(RSID<35)     Buy +=2;
+        if(RSIM>45)     Buy +=2;
+        
+        if(RSID>70)     Sell +=2;
+        if(RSIM<65)     Sell +=2;
+
+        if(MA20<value)  Buy +=3; else Sell +=3;
+        
+        if(MA200<value) Buy +=2; else Sell +=2;
+
+        if((value - (S.a+S.b)/2) > ((R.a+R.b)/2) - value) Buy+=1; else Sell+=1;
+    
+        let output = {}
+        if(Buy>7)
+        output = {
+            Score: String(Buy*10)+'%',
+            Signal: {type:'BUY', color:'#fff'}
+        }
+        else if (Sell > 7)
+        output = {
+            Score: String(Sell*10)+'%',
+            Signal: {type:'SELL', color:'#fff'}
+        }
+        else 
+        output = {
+            Score: String((20-Sell-Buy)*5)+'%',
+            Signal:{type:'HOLD', color:'#fff'}
+        }
+        
+        return output;
+    }
+    const updateList = async(i, {value,_rsiM, _rsiD , _rsiM_color, _rsiD_color, _MA20, _MA200}) =>{
       if(value!==undefined){
         setSymbolList(prev => {
+            const {Score, Signal } = getScore(value,_rsiD,_rsiM,_MA20,_MA200, prev[i].Support,  prev[i].Resistance);
+            prev[i].Score = Score;
+            prev[i].Signal = Signal;
             prev[i].value = value;
+            prev[i].MA20 = _MA20;
+            prev[i].MA200 = _MA200;
+            prev[i].MA20_trend = _MA20 > value ? "down" : "up";
+            prev[i].MA200_trend = _MA200 > value ? "down" : "up";
+            prev[i].RSI.M.value = _rsiM;
+            prev[i].RSI.D.value = _rsiD;
+            prev[i].RSI.M.color = _rsiM_color;
+            prev[i].RSI.D.color = _rsiD_color;
             return [...prev];
         })
       }
-        // console.log(symbolList);
     }
 
-    const createEntry = (symbol) => {
-        setSymbolList(previousList => {
+    const createEntry = async (symbol) => {
+       setSymbolList(previousList => {
             return [{
                 name:symbol, 
                 key:String(previousList.length), 
                 value:0,
                 RSI:{
-                    M:{value:22,color:'#fff'},
-                    H:{value:27,color:'#fff'},
-                    D:{value:55,color:'#fff'},
-                    W:{value:47,color:'#fff'},
+                    M:{value:0,color:'#fff'},
+                    D:{value:0,color:'#fff'},
                     },
-                MA: 131.75,
-                Rating: {type:'BUY', rating:'80%'},
-                Support:{a:125.5, b: 150.7},
-                Resistance:{a:125.5, b: 150.7},
-                Score: '85%',
-                Signal: {type:'BUY', color:'#fff'}
+                open:[],
+                high:[],
+                low:[],
+                close:[],
+                MA20: 0,
+                MA200: 0,
+                MA20_trend:"...",
+                MA200_trend:"...",
+                Trend: "...",
+                Support:{a:0, b: 0},
+                Resistance:{a: 0, b: 0},
+                Score: 'Loading',
+                Signal: {type:'___', color:'#fff'}
                 },...previousList]
         })
     }
 
     const onDismissSnackBar = () => setVisible(false);
 
-    const [symbolList, setSymbolList] = useState([]);
-
     const onRowDidOpen = rowKey => {
 
     };
+
     const closeRow = (rowMap, rowKey) => {
         if (rowMap[rowKey]) {
             rowMap[rowKey].closeRow();
@@ -95,7 +145,7 @@ export default function Dashboard({navigation}) {
             <View style={styles.ChartContainer}>
             {/* <Card background={'NONE'}> */}
                 <View style={styles.ChartCard}>
-                <SignalChart symbol={data.item.name} value={data.item.value}></SignalChart>
+                <SignalChart symbol={data.item.name} value={data.item.value} closeArr = {data.item.close}></SignalChart>
                 </View>
             {/* </Card> */}
             </View>
@@ -104,7 +154,7 @@ export default function Dashboard({navigation}) {
 
     const renderItem = data => (
         <Card background={data.item.Signal.type}>
-            <SignalCard symbol={data.item} updateSymbol={setSymbolList}/>
+            <SignalCard symbol={data.item} />
         </Card>
     );
     return (
