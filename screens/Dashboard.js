@@ -23,6 +23,7 @@ export default function Dashboard({navigation}) {
 
 
     useEffect(() => {
+        setSymbolList([]);
         getData();
     }, [])
 
@@ -98,14 +99,14 @@ export default function Dashboard({navigation}) {
             Score: String(Buy*10)+'%',
             Signal: {type:'BUY', color:'#fff'}
         }
-        else if (Sell > 7)
+        else if (Sell >7)
         output = {
             Score: String(Sell*10)+'%',
             Signal: {type:'SELL', color:'#fff'}
         }
         else 
         output = {
-            Score: String((20-Sell-Buy)*5)+'%',
+            Score: "S: "+String(Sell*10)+'%  '+ "B: "+String(Buy*10)+'%',
             Signal:{type:'HOLD', color:'#fff'}
         }
         

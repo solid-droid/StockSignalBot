@@ -52,7 +52,7 @@ function BackgroundTask(props) {
           html: `<script>
             setInterval(()=>{
                 window.ReactNativeWebView.postMessage(String(new Date())); //output
-            }, 3000)
+            }, 6000)
             </script>`,
         }}
       />

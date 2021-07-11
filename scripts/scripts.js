@@ -1,5 +1,7 @@
 var RSI = require('technicalindicators').RSI;
 var SMA = require('technicalindicators').SMA;
+import RnBgTask from 'react-native-bg-thread';
+
 var bullish = require('technicalindicators').bullish;
 
 var stockServer = require("yahoo-financial-data")
@@ -26,17 +28,24 @@ export const stockHistory = (symbol , setData) => {
 
 
 export const calculateRSI = async (data)=>{
-    
-    const RSI_D = await RSI.calculate({values:data,period:14});
-    skippedData = data.filter((x,i) => i%5 == 0 );
-    const RSI_W = await RSI.calculate({values:skippedData, period:14});
+    let  RSI_D =-1, RSI_W = -1;
+    await RnBgTask.runInBackground_withPriority("MIN", async ()=>{
+        RSI_D = await RSI.calculate({values:data,period:14});
+        skippedData = data.filter((x,i) => i%5 == 0 );
+        RSI_W = await RSI.calculate({values:skippedData, period:14});
+    });
+      
     return {RSI_D,RSI_W}
 }
 
 export const calculateMA = async (data)=>{
-   const MA20  = await SMA.calculate({period : 20, values : data});
-   const MA200 = await SMA.calculate({period : 200, values : data});
-   return {MA20, MA200};
+    let MA20 =-1, MA200=-1;
+    await RnBgTask.runInBackground_withPriority("MIN",async ()=>{
+        MA20  = await SMA.calculate({period : 20, values : data});
+        MA200 = await SMA.calculate({period : 200, values : data});
+    });
+
+    return {MA20, MA200};
 }
 
 export const calculateTrend = async (data)=>{
@@ -49,11 +58,11 @@ export const calculate_Res_Sup = ({High, Low, Close})=>{
 
     const PP = (High + Low + Close) / 3;
 
-    const R1 = Math.abs(2 * PP - Low).toFixed(2);
-    const S1 = Math.abs(2 * PP - High).toFixed(2);;
+    const R1 = Math.abs(2 * PP - Low).toFixed(1);
+    const S1 = Math.abs(2 * PP - High).toFixed(1);;
 
-    const R2 = Math.abs(PP + High - Low).toFixed(2);
-    const S2 = Math.abs(PP - High - Low).toFixed(2);
+    const R2 = Math.abs(PP + High - Low).toFixed(1);
+    const S2 = Math.abs(PP - High - Low).toFixed(1);
 
     return {Support:{a:S1,b:S2}, Resistance:{a:R1,b:R2}}
 };
