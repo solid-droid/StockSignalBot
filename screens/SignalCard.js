@@ -8,7 +8,6 @@ export default function SignalCard({symbol}) {
     const getRSIcolor = val => val > 70 ? 'red' :  val < 30 ? 'green': 'grey';
 
     const setData = async ({open, high, low, close}) => {
-        console.log(close);
         symbol.open = open;
         symbol.high = high;
         symbol.low = low;
