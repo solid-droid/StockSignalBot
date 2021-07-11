@@ -9,6 +9,8 @@ only works for NSE market.
   Swipe to view last 11 day trend graph.  
   Support and Resistance based on yesterdays values.  
   Stock trade quality scoring.  
+  Native notifications.  
+  Background Tracking.  
 
 ## Why this app  
 Monitoring stock market full-time is boring  
