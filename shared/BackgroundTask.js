@@ -135,6 +135,7 @@ const calculate = (data) => {
         onMessage={handleTask}
         source={{
           html: `<script>
+          window.ReactNativeWebView.postMessage(String(new Date()));
             setInterval(()=>{
                 window.ReactNativeWebView.postMessage(String(new Date())); //output
             }, 10000)

@@ -49,11 +49,11 @@ export const calculate_Res_Sup = ({High, Low, Close})=>{
 
     const PP = (High + Low + Close) / 3;
 
-    const R1 = Math.abs(2 * PP - Low).toFixed(2);
-    const S1 = Math.abs(2 * PP - High).toFixed(2);;
+    const R1 = Math.abs(2 * PP - Low).toFixed(1);
+    const S1 = Math.abs(2 * PP - High).toFixed(1);;
 
-    const R2 = Math.abs(PP + High - Low).toFixed(2);
-    const S2 = Math.abs(PP - High - Low).toFixed(2);
+    const R2 = Math.abs(PP + High - Low).toFixed(1);
+    const S2 = Math.abs(PP - High - Low).toFixed(1);
 
     return {Support:{a:S1,b:S2}, Resistance:{a:R1,b:R2}}
 };

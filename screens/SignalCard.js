@@ -1,28 +1,15 @@
 import React from 'react'
 import {useEffect} from 'react'
-import { View, Text,StyleSheet,TouchableOpacity } from 'react-native'
-import {stockHistory, calculateRSI, calculateMA, calculate_Res_Sup} from '../scripts/scripts';
+import {View, Text,StyleSheet,TouchableOpacity } from 'react-native'
+import {stockHistory, calculate_Res_Sup} from '../scripts/scripts';
 
 export default function SignalCard({symbol}) {
-
-    const getRSIcolor = val => val > 70 ? 'red' :  val < 30 ? 'green': 'grey';
 
     const setData = async ({open, high, low, close}) => {
         symbol.open = open;
         symbol.high = high;
         symbol.low = low;
         symbol.close = close;
-        // const {RSI_D, RSI_W} = await calculateRSI(close);
-        // const {MA20,MA200} = await calculateMA(close);
-        // symbol.MA20 = MA20[MA20.length-1].toFixed(2);
-        // symbol.MA200 = MA200[MA200.length-1].toFixed(2);
-        // symbol.MA20_trend = "...";
-        // symbol.MA200_trend = "...";
-        // symbol.RSI.M.value = RSI_W[RSI_W.length-1];
-        // symbol.RSI.D.value = RSI_D[RSI_D.length-1];
-        // symbol.RSI.M.color = getRSIcolor( symbol.RSI.M.value);
-        // symbol.RSI.D.color = getRSIcolor( symbol.RSI.D.value);
-
         const High = high[high.length-1];
         const Low = low[low.length-1];
         const Close = close[close.length-1];
