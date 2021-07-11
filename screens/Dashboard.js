@@ -111,7 +111,7 @@ export default function Dashboard({navigation}) {
         
         return output;
     }
-    const updateList = async(i, {value,_rsiM, _rsiD , _rsiM_color, _rsiD_color, _MA20, _MA200}) =>{
+    const updateList = (i, {value,_rsiM, _rsiD , _rsiM_color, _rsiD_color, _MA20, _MA200}) =>{
       if(value!==undefined){
         setSymbolList(prev => {
             const {Score, Signal } = getScore(value,_rsiD,_rsiM,_MA20,_MA200, prev[i].Support,  prev[i].Resistance);

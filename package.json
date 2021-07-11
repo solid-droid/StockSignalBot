@@ -12,8 +12,6 @@
     "@react-native-community/hooks": "^2.6.0",
     "@react-native-community/masked-view": "0.1.10",
     "@react-navigation/native": "^5.9.4",
-    "cheerio-without-node-native": "^0.20.2",
-    "crypto": "^1.0.1",
     "expo": "~41.0.1",
     "expo-background-fetch": "^9.1.0",
     "expo-chart-kit": "^1.2.4",

@@ -14,7 +14,7 @@ export const stockHistory = (symbol , setData) => {
     const getData = (type) => {
         stockServer.history(symbol, type, formatDate(start), formatDate(today), '1d',  (err, data) => {
             counter++;
-            record[type]= data;
+            record[type]= data.filter(x=>x!==null && x!==undefined);
             if(counter==4)
             setData(record, symbol);
         });
