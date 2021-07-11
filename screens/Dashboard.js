@@ -93,7 +93,7 @@ export default function Dashboard({navigation}) {
         if((value - (S.a+S.b)/2) > ((R.a+R.b)/2) - value) Buy+=1; else Sell+=1;
     
         let output = {}
-        if(Buy>7)
+        if(Buy > 7)
         output = {
             Score: String(Buy*10)+'%',
             Signal: {type:'BUY', color:'#fff'}
@@ -105,7 +105,7 @@ export default function Dashboard({navigation}) {
         }
         else 
         output = {
-            Score: String((20-Sell-Buy)*5)+'%',
+            Score: 'B: '+String(Buy*10)+'% '+'S: '+String(Sell*10)+'%',
             Signal:{type:'HOLD', color:'#fff'}
         }
         
