@@ -80,15 +80,15 @@ export default function Dashboard({navigation}) {
     const getScore = (value, RSID, RSIM, MA20, MA200, S , R)=> {
         let Buy = 0, Sell =0;
 
-        if(RSID<35)     Buy +=2;
-        if(RSIM>45)     Buy +=2;
+        if(RSID<35)     Buy +=4;
+        if(RSIM>45)     Buy +=1;
         
-        if(RSID>70)     Sell +=2;
-        if(RSIM<65)     Sell +=2;
+        if(RSID>70)     Sell +=4;
+        if(RSIM<65)     Sell +=1;
 
         if(MA20<value)  Buy +=3; else Sell +=3;
         
-        if(MA200<value) Buy +=2; else Sell +=2;
+        if(MA200<value) Buy +=1; else Sell +=1;
 
         if((value - (S.a+S.b)/2) > ((R.a+R.b)/2) - value) Buy+=1; else Sell+=1;
     

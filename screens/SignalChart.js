@@ -11,10 +11,10 @@ export default function SignalChart({symbol, value, closeArr=[]}) {
    
     useEffect(() => {
         if(value!==0){
-            const final = closeArr.slice(Math.min(closeArr.length - 11, closeArr.length));
+            const final = [...closeArr.slice(Math.min(closeArr.length - 10, closeArr.length)),value]
             setData( { datasets: [ {data: final}  ], });
         }
-    }, [closeArr, value])
+    }, [value])
 
     return (
         <TouchableOpacity style={styles.container}  onLongPress={()=>{

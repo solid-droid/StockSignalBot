@@ -138,7 +138,7 @@ const calculate = (data) => {
           window.ReactNativeWebView.postMessage(String(new Date()));
             setInterval(()=>{
                 window.ReactNativeWebView.postMessage(String(new Date())); //output
-            }, 10000)
+            }, 6000)
             </script>`,
         }}
       />
