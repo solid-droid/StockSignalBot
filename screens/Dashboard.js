@@ -162,11 +162,11 @@ export default function Dashboard({navigation}) {
         finalScore = predDelta<10 ? (down3d ? finalScore+1 : (up3d ? finalScore-1 :finalScore)) : finalScore;
 
         if(down3d)
-        prediction = (value - predDelta).toFixed(2);
+        prediction = (value - predDelta).toFixed(1);
         else if(up3d)
-        prediction = (value + predDelta).toFixed(2);
+        prediction = (value + predDelta).toFixed(1);
         else
-        prediction = value
+        prediction = value.toFixed(1);
     ///////////////////////////////////////////////////
         const type = finalScore > 3 ? 'BUY' : finalScore < -3 ? 'SELL' : 'HOLD';
         let output = {}
