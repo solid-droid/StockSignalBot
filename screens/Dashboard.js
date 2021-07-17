@@ -6,11 +6,13 @@ import { SwipeListView } from 'react-native-swipe-list-view';
 import Icon from "react-native-vector-icons/FontAwesome";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+import {historical, findPeaksAndTroughs} from '../scripts/scripts'
 import Card from '../shared/Card'
 import Search from '../shared/Search'
 import SignalCard from './SignalCard'
 import SignalChart from './SignalChart'
 import BackgroundTask from '../shared/BackgroundTask'
+import { abs } from 'react-native-reanimated';
 
 const window = Dimensions.get("window");
 
@@ -75,52 +77,123 @@ export default function Dashboard({navigation}) {
       trigger: null,
     });
   }
-  //////////////////////////////////////////////////////////////////
 
-    const getScore = (value, RSID, RSIM, MA20, MA200, S , R)=> {
-        let Buy = 0, Sell =0;
-
-        if(RSID<35)     Buy +=4;
-        if(RSIM>45)     Buy +=1;
-        
-        if(RSID>70)     Sell +=4;
-        if(RSIM<65)     Sell +=1;
-
-        if(MA20<value)  Buy +=3; else Sell +=3;
-        
-        if(MA200<value) Buy +=1; else Sell +=1;
-
-        if((value - (S.a+S.b)/2) > ((R.a+R.b)/2) - value) Buy+=1; else Sell+=1;
+  /////////////////////////////////////////////////////////////////
+    const map = (x, a, b, c, d) => {
+        return (x-a)/(b-a)*(d-c)+c;
+    }
     
+    //difference of items of 2 arrays
+    const delta = (a,b) => {
+        return a.map((x,i) => x-b[i]);
+    }
+
+    //line of best fit
+    const line = (x,y) => {
+        const m = (y.reduce((a,b) => a+b, 0)/y.length);
+        const b = y.reduce((a,b) => a+b, 0)-m*x.reduce((a,b) => a+b, 0);
+        return {m,b};
+    }
+
+    const getScore = (value, name , RSIhigh, RSIlow)=> {
+        const RSIarr = historical[name].RSID;
+        const MAarr = historical[name].MA20;
+
+        const RSID = RSIarr[RSIarr.length-1];
+
+        let RSIBuy = 0, MABuy=0, prediction = 0;
+        let finalScore = 0;
+
+        ////////////// RSI algo /////////////////////////////////
+        if(RSID<30)          RSIBuy =100;      
+        else if(RSID>70)     RSIBuy =0;
+        else RSIBuy = map(RSID,30,70,100, 0);
+
+        if(RSID > RSIhigh)   RSIBuy = RSIBuy < 30 ? RSIBuy : 30;
+
+        if(RSID < RSIlow)   RSIBuy = RSIBuy > 70 ? RSIBuy : 70;
+
+        finalScore = RSIBuy > 70 ? RSIBuy > 80 ? finalScore+3 : finalScore+2 : finalScore;
+        finalScore = RSIBuy < 30 ? RSIBuy > 20 ? finalScore-3 : finalScore-2 : finalScore;
+
+        ////////////////// Moving Average algo /////////////////////
+        const last5DaysMarr = MAarr.slice(-5);
+        const last5DayClose = [...historical[name].close.slice(-4), value];
+        const delta5d = delta(last5DayClose,last5DaysMarr);
+        const down3d = delta5d.slice(-2).every(a => a<=0);
+        const up3d = delta5d.slice(-2).every(a => a>=0);
+        const down5d = delta5d.every(a => a<=0);
+        const up5d = delta5d.every(a => a>=0);
+        //-4  -  +4
+        let points = 0;
+        if(down3d){
+            if(down5d){
+                //strong down trend
+                points= delta5d.slice(0,-1).reduce((a, b, i)=> (Math.abs(b) <= Math.abs(delta5d[i+1]) ? a+1 : a-1),0);
+                MABuy = map(points,5,-5, 0, 100);           
+            } else {
+                //week down trend
+                points= delta5d.slice(-3,-1).reduce((a, b, i)=> (Math.abs(b) <= Math.abs(delta5d[i+1]) ? a+1 : a-1),0);
+                MABuy = map(points,3,-3, 0, 100);   
+            }
+            
+        }else if(up3d){
+            if(up5d){
+                //strong up trend
+                points= delta5d.slice(0,-1).reduce((a, b, i)=> (Math.abs(b) <= Math.abs(delta5d[i+1])+1 ? a+1 : a-1),0);
+                MABuy = map(points,5,-5, 0, 100);           
+            } else {
+                //week up trend
+                points= delta5d.slice(-3,-1).reduce((a, b, i)=> (Math.abs(b) <= Math.abs(delta5d[i+1])+1 ? a+1 : a-1),0);
+                MABuy = map(points,3,-3, 0, 100);   
+            }
+        } else {
+            //No predictable trend
+            MABuy = 50;
+        }
+        
+        MABuy = MABuy.toFixed(0);
+    ///////////////// Prediction algo //////////////////
+        const predictedLine = line([0,1,2,3,4],delta5d.splice(-4));
+        const predDelta = predictedLine.m*5+predictedLine.b;
+        finalScore = predDelta<10 ? (down3d ? finalScore+1 : (up3d ? finalScore-1 :finalScore)) : finalScore;
+
+        if(down3d)
+        prediction = (value - predDelta).toFixed(2);
+        else if(up3d)
+        prediction = (value + predDelta).toFixed(2);
+        else
+        prediction = value
+    ///////////////////////////////////////////////////
+        const type = finalScore > 2 ? 'BUY' : finalScore < -2 ? 'SELL' : 'HOLD';
         let output = {}
-        if(Buy > 7)
         output = {
-            Score: String(Buy*10)+'%',
-            Signal: {type:'BUY', color:'#fff'}
-        }
-        else if (Sell > 7)
-        output = {
-            Score: String(Sell*10)+'%',
-            Signal: {type:'SELL', color:'#fff'}
-        }
-        else 
-        output = {
-            Score: 'B: '+String(Buy*10)+'% '+'S: '+String(Sell*10)+'%',
-            Signal:{type:'HOLD', color:'#fff'}
+            RSI_score: RSIBuy.toFixed(0),
+            MA_score: MABuy,
+            prediction,
+            Signal:{type, color:'#fff'}
         }
         
         return output;
     }
+
     const updateList = (i, {value,_rsiM, _rsiD , _rsiM_color, _rsiD_color, _MA20, _MA200}) =>{
       if(value!==undefined){
         setSymbolList(prev => {
-            const {Score, Signal } = getScore(value,_rsiD,_rsiM,_MA20,_MA200, prev[i].Support,  prev[i].Resistance);
+            const output = findPeaksAndTroughs(historical[prev[i].name].RSID)
+            //find average of array
+            prev[i].RSI.D.high = (output.peaks.reduce((a, b) => a + historical[prev[i].name].RSID[b]) / output.peaks.length).toFixed(0);
+            prev[i].RSI.D.low  = (output.troughs.reduce((a, b) => a + historical[prev[i].name].RSID[b]) / output.troughs.length).toFixed(0);
+            
+            const {RSI_score, MA_score, prediction, Signal } = getScore(value,  prev[i].name, prev[i].RSI.D.high , prev[i].RSI.D.low);
 
             if(prev[i].Signal.type !== Signal.type && Signal.type!=='HOLD'){
                 sendNotification(prev[i].name.split(".")[0] +"   "+ value , Signal.type)
             }
-            
-            prev[i].Score = Score;
+
+            prev[i].Score.RSI = RSI_score;
+            prev[i].Prediction.MA = prediction;
+            prev[i].Score.MA = MA_score;
             prev[i].Signal = Signal;
             prev[i].value = value;
             prev[i].MA20 = _MA20;
@@ -144,12 +217,8 @@ export default function Dashboard({navigation}) {
                 value:0,
                 RSI:{
                     M:{value:0,color:'#fff'},
-                    D:{value:0,color:'#fff'},
+                    D:{value:0,color:'#fff',high:0, low:0},
                     },
-                open:[],
-                high:[],
-                low:[],
-                close:[],
                 MA20: 0,
                 MA200: 0,
                 MA20_trend:"...",
@@ -157,7 +226,8 @@ export default function Dashboard({navigation}) {
                 Trend: "...",
                 Support:{a:0, b: 0},
                 Resistance:{a: 0, b: 0},
-                Score: 'Loading',
+                Score: {RSI:0,MA:0},
+                Prediction:{MA:0},
                 Signal: {type:'___', color:'#fff'}
                 },...previousList]
         })
@@ -196,7 +266,7 @@ export default function Dashboard({navigation}) {
             <View style={styles.ChartContainer}>
             {/* <Card background={'NONE'}> */}
                 <View style={styles.ChartCard}>
-                <SignalChart symbol={data.item.name} value={data.item.value} closeArr = {data.item.close}></SignalChart>
+                <SignalChart symbol={data.item.name} value={data.item.value}></SignalChart>
                 </View>
             {/* </Card> */}
             </View>

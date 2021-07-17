@@ -2,15 +2,19 @@ import React from 'react'
 import { Text, StyleSheet, TouchableOpacity } from 'react-native'
 import {useEffect} from 'react'
 import { LineChart} from 'react-native-chart-kit'
+import {historical} from '../scripts/scripts'
 
-export default function SignalChart({symbol, value, closeArr=[]}) {
+export default function SignalChart({symbol, value}) {
     const interval = ["1 Day", "1 hour", "1 minute"]
-
+    let closeArr =[];
     const [data, setData] = React.useState( { datasets: [ {data: [0,0,0]}  ], });
     const [intevalValue, setInteval] = React.useState(0);
    
     useEffect(() => {
         if(value!==0){
+            if(closeArr.length==0){
+                closeArr = historical[symbol].close;
+            }
             const final = [...closeArr.slice(Math.min(closeArr.length - 10, closeArr.length)),value]
             setData( { datasets: [ {data: final}  ], });
         }

@@ -4,6 +4,8 @@ var bullish = require('technicalindicators').bullish;
 
 var stockServer = require("yahoo-financial-data")
 
+export var historical = {};
+
 export const stockHistory = (symbol , setData) => {
     const today = new Date();
     today.setDate(today.getDate()-1);
@@ -16,7 +18,10 @@ export const stockHistory = (symbol , setData) => {
             counter++;
             record[type]= data.filter(x=>x!==null && x!==undefined);
             if(counter==4)
-            setData(record, symbol);
+            {
+                historical[symbol] = record;
+                setData();
+            }
         });
     }
 
@@ -67,3 +72,23 @@ const formatDate = (date, format="yy-mm-dd") => {
 
     return format.replace(/mm|dd|yy|yyy/gi, matched => map[matched])
 }
+
+
+export const findPeaksAndTroughs = (array) => {
+    var start = 1;                        // Starting index to search
+    var end = array.length - 2;           // Last index to search
+    var obj = { peaks: [], troughs: []  };// Object to store the indexs of peaks/thoughs
+    
+    for(var i = start; i<=end; i++)
+    {
+      var current = array[i];
+      var last = array[i-1];
+      var next = array[i+1];
+      
+      if(current > next && current > last) 
+          obj.peaks.push(i);
+      else if(current < next && current < last) 
+          obj.troughs.push(i);
+    }
+    return obj;
+  }

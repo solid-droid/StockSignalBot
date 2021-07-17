@@ -1,6 +1,6 @@
 import * as React from "react"
 import { WebView } from "react-native-webview"
-import {calculateRSI, calculateMA} from '../scripts/scripts';
+import {historical} from "../scripts/scripts"
 
 var stockServer = require("yahoo-financial-data")
 let CalcInProgress = false;
@@ -19,16 +19,17 @@ function BackgroundTask(props) {
       finalData= props.symbolList.map((x,i)=>{
           if(currentData[x.name])
           {
+ 
             const record = {};
-            ['close'].forEach(x=> record[x]= props.symbolList[i][x]);
-           
+            ['close'].forEach(y=> record[y]= historical[x.name][y]);
+          
             const rawData = {i}
             rawData['name']=x.name;
             rawData['data']=[...record.close,currentData[x.name]] 
             return rawData;
           }
       })
-    
+
       if(finalData[0] && !CalcInProgress){
             CalcInProgress = true;
             const run = `
@@ -44,13 +45,16 @@ function BackgroundTask(props) {
  
 
     const sendData = (i,name, {MA20,MA200,RSID,RSIW}) => {
-     
+      historical[name]['RSID']=RSID;
+      historical[name]['MA20']=MA20;
       const _rsiM = RSIW;
-      const _rsiD = RSID;
+      const _rsiD = RSID[RSID.length-1];
       const _rsiM_color  = getRSIcolor(_rsiM);
       const _rsiD_color = getRSIcolor( _rsiD);
-      const _MA20 = MA20.toFixed(2);
-      const _MA200 = MA200.toFixed(2);
+      const _MA20 = MA20[MA20.length-1].toFixed(2);
+      let _MA200 = 0;
+      if(MA200)
+      _MA200 = MA200.toFixed(2);
       
       props.updateList(i, {value : currentData[name],_rsiM, _rsiD , _rsiM_color, _rsiD_color, _MA20, _MA200});
     }
@@ -108,9 +112,9 @@ const getRSI = (dataArr) => {
   RSIW = calcRS(dataArr.filter((x,i) => i%5 == 0 )).map(x=> parseFloat((100-(100/(1+x))).toFixed(2)));
 
   output = {}
-  output['MA20'] = MA20[MA20.length-1];
+  output['MA20'] = MA20;
   output['MA200'] = MA200[MA200.length-1];
-  output['RSID'] = RSID[RSID.length-1];
+  output['RSID'] = RSID;
   output['RSIW'] = RSIW[RSIW.length-1];
 
   return output;
@@ -138,7 +142,7 @@ const calculate = (data) => {
           window.ReactNativeWebView.postMessage(String(new Date()));
             setInterval(()=>{
                 window.ReactNativeWebView.postMessage(String(new Date())); //output
-            }, 6000)
+            }, 10000)
             </script>`,
         }}
       />
