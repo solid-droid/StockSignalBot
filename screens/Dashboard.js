@@ -113,8 +113,8 @@ export default function Dashboard({navigation}) {
 
         if(RSID < RSIlow)   RSIBuy = RSIBuy > 70 ? RSIBuy : 70;
 
-        finalScore = RSIBuy > 70 ? RSIBuy > 80 ? finalScore+3 : finalScore+2 : finalScore;
-        finalScore = RSIBuy < 30 ? RSIBuy > 20 ? finalScore-3 : finalScore-2 : finalScore;
+        finalScore = RSIBuy > 70 ? RSIBuy > 80 ? finalScore+2 : finalScore+1 : finalScore;
+        finalScore = RSIBuy < 30 ? RSIBuy > 20 ? finalScore-2 : finalScore-1 : finalScore;
 
         ////////////////// Moving Average algo /////////////////////
         const last5DaysMarr = MAarr.slice(-5);
@@ -153,6 +153,9 @@ export default function Dashboard({navigation}) {
         }
         
         MABuy = MABuy.toFixed(0);
+        
+        finalScore = MABuy > 70 ? MABuy > 80 ? finalScore+2 : finalScore+1 : finalScore;
+        finalScore = MABuy < 30 ? MABuy > 20 ? finalScore-2 : finalScore-1 : finalScore;
     ///////////////// Prediction algo //////////////////
         const predictedLine = line([0,1,2,3,4],delta5d.splice(-4));
         const predDelta = predictedLine.m*5+predictedLine.b;
@@ -165,7 +168,7 @@ export default function Dashboard({navigation}) {
         else
         prediction = value
     ///////////////////////////////////////////////////
-        const type = finalScore > 2 ? 'BUY' : finalScore < -2 ? 'SELL' : 'HOLD';
+        const type = finalScore > 3 ? 'BUY' : finalScore < -3 ? 'SELL' : 'HOLD';
         let output = {}
         output = {
             RSI_score: RSIBuy.toFixed(0),
