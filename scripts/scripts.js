@@ -1,8 +1,5 @@
-var RSI = require('technicalindicators').RSI;
-var SMA = require('technicalindicators').SMA;
-var bullish = require('technicalindicators').bullish;
-
-var stockServer = require("yahoo-financial-data")
+import * as v10 from '../customModule/yahoo-financial-data/financeData/yahooFinanceDataV10';
+import * as v8 from '../customModule/yahoo-financial-data/financeData/yahooFinanceDatav8';
 
 export var historical = {};
 
@@ -14,7 +11,7 @@ export const stockHistory = (symbol , setData) => {
     let counter = 0;
     let record = {};
     const getData = (type) => {
-        stockServer.history(symbol, type, formatDate(start), formatDate(today), '1d',  (err, data) => {
+        history(symbol, type, formatDate(start), formatDate(today), '1d',  (err, data) => {
             counter++;
             record[type]= data.filter(x=>x!==null && x!==undefined);
             if(counter==4)
@@ -29,6 +26,47 @@ export const stockHistory = (symbol , setData) => {
 
 }
 
+export const price = (ticker, completion) => {
+    v10.price(ticker, function (err, data) {
+        if (!err) 
+        {
+            if (!data["regularMarketPrice"]["raw"])
+            {
+                completion(err, data["regularMarketPrice"])
+            }
+            else {
+                completion(err, data["regularMarketPrice"]["raw"])
+            }
+        }
+        else {
+            completion(err, null)
+        }
+    });
+}
+
+export const history = (ticker, value, startDate, endDate, interval, completion) => {
+    var values = ['high', 'low', 'open', 'close', 'volume']
+    var intervals = ["1d","5d","1mo","3mo","6mo","1y","2y","5y","10y","ytd","max"]
+    if (!values.includes(value)) {
+        var err = {'code': "Bad args", 'description': "Invalid Value field"}
+        completion(err, null);
+        return
+    }
+    if (!intervals.includes(interval)) {
+        var err = {'code': "Bad args", 'description': "Invalid Interval field"}
+        completion(err, null);
+        return
+    }
+    v8.price(ticker, startDate, endDate, interval, function(err, data) {
+        if (!err) 
+        {
+            completion(err, data[0]["indicators"]["quote"][0][value])
+        }
+        else {
+            completion(err, null)
+        }
+    })
+}
 
 export const calculateRSI = async (data)=>{
     
@@ -42,11 +80,6 @@ export const calculateMA = async (data)=>{
    const MA20  = await SMA.calculate({period : 20, values : data});
    const MA200 = await SMA.calculate({period : 200, values : data});
    return {MA20, MA200};
-}
-
-export const calculateTrend = async (data)=>{
-
-    return await bullish(data);
 }
 
 
@@ -92,3 +125,6 @@ export const findPeaksAndTroughs = (array) => {
     }
     return obj;
   }
+
+
+  

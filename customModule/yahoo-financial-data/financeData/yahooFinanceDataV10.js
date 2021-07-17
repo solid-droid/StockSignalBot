@@ -1,51 +1,19 @@
-class YahooFinanceDataV10 {
-    request = require("../financeData/utils/request")
-    host = "https://query1.finance.yahoo.com"
-    baseUrl = "/v10/finance/quoteSummary/"  // + AAPL?modules=assetProfile%2CsummaryProfile (%2C is hex - ,)
-    /*
-    *****AVAILABLE MODULES******
-    modules = [
-   'assetProfile',
-   'summaryProfile',
-   'summaryDetail',
-   'esgScores',
-   'price',
-   'incomeStatementHistory',
-   'incomeStatementHistoryQuarterly',
-   'balanceSheetHistory',
-   'balanceSheetHistoryQuarterly',
-   'cashflowStatementHistory',
-   'cashflowStatementHistoryQuarterly',
-   'defaultKeyStatistics',
-   'financialData',
-   'calendarEvents',
-   'secFilings',
-   'recommendationTrend',
-   'upgradeDowngradeHistory',
-   'institutionOwnership',
-   'fundOwnership',
-   'majorDirectHolders',
-   'majorHoldersBreakdown',
-   'insiderTransactions',
-   'insiderHolders',
-   'netSharePurchaseActivity',
-   'earnings',
-   'earningsHistory',
-   'earningsTrend',
-   'industryTrend',
-   'indexTrend',
-   'sectorTrend' ]
-   */
+   const host = "https://query1.finance.yahoo.com"
+   const baseUrl = "/v10/finance/quoteSummary/"  // + AAPL?modules=assetProfile%2CsummaryProfile (%2C is hex - ,)
+  
 
-    constructor() {
+    function request(endpoint, callback) {
+        fetch(endpoint).then(res => res.json().then(res => {
+            callback(res);
+        }));
+    }
 
+    function buildUrl(ticker, module) {
+        return (host + baseUrl + ticker + "?modules=" + module)
     }
-    buildUrl(ticker, module) {
-        return (this.host + this.baseUrl + ticker + "?modules=" + module)
-    }
-    price(ticker, callback) {
-        this.request(this.buildUrl(ticker, "price"), function(resp) {
-            var json = JSON.parse(resp)
+    export function price(ticker, callback) {
+        request(buildUrl(ticker, "price"), function(resp) {
+            var json = resp
             var quoteSummary = json["quoteSummary"]
             if (quoteSummary["error"] == null)
             {
@@ -58,50 +26,5 @@ class YahooFinanceDataV10 {
             }
         })
     }
-    summaryDetail(ticker, callback) {
-        this.request(this.buildUrl(ticker, "summaryDetail"), function(resp) {
-            var json = JSON.parse(resp)
-            var quoteSummary = json["quoteSummary"]
-            if (quoteSummary["error"] == null)
-            {
-                var result = quoteSummary["result"][0]["summaryDetail"]
-                callback(null, result)
-            }
-            else 
-            {
-                callback(quoteSummary["error"], null)
-            }
-        })
-    }
-    defaultKeyStatistics(ticker, callback) {
-        this.request(this.buildUrl(ticker, "defaultKeyStatistics"), function(resp) {
-            var json = JSON.parse(resp)
-            var quoteSummary = json["quoteSummary"]
-            if (quoteSummary["error"] == null)
-            {
-                var result = quoteSummary["result"][0]["defaultKeyStatistics"]
-                callback(null, result)
-            }
-            else 
-            {
-                callback(quoteSummary["error"], null)
-            }
-        })
-    }
-    financialData(ticker, callback) {
-        this.request(this.buildUrl(ticker, "financialData"), function(resp) {
-            var json = JSON.parse(resp)
-            var quoteSummary = json["quoteSummary"]
-            if (quoteSummary["error"] == null)
-            {
-                var result = quoteSummary["result"][0]["financialData"]
-                callback(null, result)
-            }
-            else 
-            {
-                callback(quoteSummary["error"], null)
-            }
-        })
-    }
-}
-module.exports = new YahooFinanceDataV10();
+
+

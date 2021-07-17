@@ -1,8 +1,7 @@
 import * as React from "react"
 import { WebView } from "react-native-webview"
-import {historical} from "../scripts/scripts"
+import {historical, price} from "../scripts/scripts"
 
-var stockServer = require("yahoo-financial-data")
 let CalcInProgress = false;
 
 function BackgroundTask(props) {
@@ -60,7 +59,7 @@ function BackgroundTask(props) {
     }
 
     const currentStockValue = ( symbol ) => {
-        stockServer.price( symbol , (err, data) => {
+        price( symbol , (err, data) => {
             setCurrentData((previous)=>{
                 const value = {};
                 value[symbol]=data;

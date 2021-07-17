@@ -1,6 +1,6 @@
 import React from 'react'
 import { View,TextInput, StyleSheet} from 'react-native'
-var stockServer = require("yahoo-financial-data")
+import {price} from "../scripts/scripts"
 
 export default function Search({success, symbolList, fail}) {
 
@@ -27,7 +27,7 @@ export default function Search({success, symbolList, fail}) {
 
         if(allow)
         {
-            stockServer.price( value , (err, data) => {
+            price( value , (err, data) => {
                 if(data===null)
                 {
                     allow = false; 
