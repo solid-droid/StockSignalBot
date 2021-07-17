@@ -35,7 +35,7 @@ export default function SignalCard({symbol}) {
         <View 
         style={styles.container}>
             <View style={styles.data}>
-                <View style={[styles.symbol,{marginBottom:15}]}>
+                <View style={[styles.symbol,{marginBottom:7}]}>
                     <Text style={styles.symbolName}>{symbol.name.split('.')[0]}</Text>
                     <Text style={styles.symbolValue}>{symbol.value}</Text>
                 </View>
@@ -65,11 +65,11 @@ export default function SignalCard({symbol}) {
                     <Text style={styles.rightPoint}>{symbol.Resistance.b}</Text>
                 </View>
                 <View style={styles.signalType}>
-                    <View style={{marginBottom:10, flexDirection:'row'}}>
+                    <View style={{marginBottom:5, flexDirection:'row'}}>
                         <Text style={styles.key}>RSI Buy</Text>
                         <Text style={styles.value}>: {symbol.Score.RSI}% </Text>
                     </View>
-                    <View style={{marginBottom:10, flexDirection:'row'}}>
+                    <View style={{marginBottom:5, flexDirection:'row'}}>
                         <Text style={[styles.key,{fontWeight:'bold'}]}>{symbol.Signal.type}</Text>
                         <Text style={styles.value}>: {symbol.Prediction.MA}</Text>
                     </View>
@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
     data:{
         // backgroundColor:Colors.blue100,
         alignItems:'flex-start',
-        flex: 1.8,
+        flex: 2,
         borderRightWidth:1,
     },
     signal:{
